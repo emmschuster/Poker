@@ -19,6 +19,7 @@ public class MainPokerGame2 {
 	static int viererCount;
 	static int fullHausCount;
 	static int strasseCount;
+	static int streetAuﬂnahmeCount;
 	static int flushCount;
 	static int streetFlushCount;
 	static int royalStreetFlushCount;
@@ -30,10 +31,11 @@ public class MainPokerGame2 {
 		System.out.println("Bei "+SCHLEIFENDURCHLAEUFE+" Durchg‰ngen hast du : ");
 		for(int schleifi=0; schleifi<SCHLEIFENDURCHLAEUFE; schleifi++) { 
 			gezHand = kartenZiehen();
-			if (paar(gezHand)) {paarCount++;} 
+			if (checkForOnePair(gezHand)) {paarCount++;}
 			if (zweiPaar(gezHand)) {paareCount++;}
 			if (dreier(gezHand)) {dreierCount++;}
 			if (street(gezHand)) {strasseCount++;}
+			if (streetAuﬂnahme(gezHand)) {streetAuﬂnahmeCount++;}
 			if (flush(gezHand)) {flushCount++;}
 			if (fullHaus(gezHand)) {fullHausCount++;}
 			if (vierer(gezHand)) {viererCount++;}
@@ -42,10 +44,10 @@ public class MainPokerGame2 {
 		}
 		System.out.println(paarCount+"\t mal ein Paar. Wahrscheinlichekit von \t\t"+numberFormat.format((((paarCount/SCHLEIFENDURCHLAEUFE)*100)))+"%");
 		System.out.println(paareCount+"\t mal zwei Paare. Wahrscheinlichekit von \t"+numberFormat.format(((paareCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
-		System.out.println(dreierCount+"\t mal einen Dreier. Wahrscheinlichekit von \t"+"0"+numberFormat.format(((dreierCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
-		System.out.println(strasseCount+"\t mal eine Strasse. Wahrscheinlichekit von \t"+"0"+numberFormat.format(((strasseCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
-		System.out.println(flushCount+"\t mal einen Flush. Wahrscheinlichekit von \t"+"0"+numberFormat.format(((flushCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
-		System.out.println(fullHausCount+"\t mal ein Volles Haus Bro. Wahrscheinlichekit von "+"0"+numberFormat.format(((fullHausCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
+		System.out.println(dreierCount+"\t mal einen Dreier. Wahrscheinlichekit von \t"+numberFormat.format(((dreierCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
+		System.out.println((strasseCount+streetAuﬂnahmeCount)+"\t mal eine Strasse. Wahrscheinlichekit von \t"+"0"+numberFormat.format((((strasseCount+streetAuﬂnahmeCount)/SCHLEIFENDURCHLAEUFE)*100))+"%");
+		System.out.println(flushCount+"\t mal einen Flush. Wahrscheinlichekit von \t"+"0"+numberFormat.format(((flushCount/SCHLEIFENDURCHLAEUFE)*100))+"%"+"\t stimmt sogar (irgendwas zwischen 0,2052 und 0,1913)");
+		System.out.println(fullHausCount+"\t mal ein Volles Haus. Wahrscheinlichekit von \t"+"0"+numberFormat.format(((fullHausCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
 		System.out.println(viererCount+"\t mal einen Vierer. Wahrscheinlichekit von \t"+"0"+numberFormat.format(((viererCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
 		System.out.println(streetFlushCount+"\t mal ein Straight Flush. Wahrscheinlichekit von "+"0"+numberFormat.format(((streetFlushCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
 		System.out.println(royalStreetFlushCount+"\t mal einen Royal Flush. Wahrscheinlichekit von \t"+"0"+numberFormat.format(((royalStreetFlushCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
@@ -102,76 +104,75 @@ public class MainPokerGame2 {
 		Arrays.sort(gezSymbole);
 		return symbolHerausfinden(gezSymbole[gezSymbole.length - 1]);
 	}
-
-	static boolean paar(int[] gezHand) {
-		int[] gezSymbole = convertHandSymbol(gezHand); 
-		Arrays.sort(gezSymbole); 
-		for (int i = 0; i < gezSymbole.length - 1; i++) {
-			if (gezSymbole[i] == gezSymbole[i + 1]) { 
-				return true; 
-			}
-		}
-		return false;
+	
+	public static int countDuplicateSymbole(int cards[]) { //vom Flash geklaut
+	        int amountOfDuplicates = 0;
+	        for (int i = 0; i < cards.length-1; i++) {
+	            for (int j = i+1; j < cards.length; j++) {
+	                if (((cards[i] % anzSymbole) == (cards[j] % anzSymbole))) {
+	                    amountOfDuplicates++; //des sollten aussen wo gez‰hlt wean
+	                }
+	            }
+	        }
+	        return amountOfDuplicates;
 	}
+	
+	public static boolean checkForOnePair(int[] cards) {
+        if (countDuplicateSymbole(cards) == 1) {	//f¸r 2 pair dann 2
+            return true;
+        }
+        return false;
+    }
+	
 	static boolean zweiPaar(int[] gezHand) {
-		int[] gezSymbole = convertHandSymbol(gezHand); 
-		Arrays.sort(gezSymbole); 
-		int anzahlZweiPaare=0;
-		for (int i = 0; i < gezSymbole.length - 1; i++) { 
-			if (gezSymbole[i] == gezSymbole[i + 1]) { 
-				anzahlZweiPaare++; 
-			}
-			if (anzahlZweiPaare==2) {
-				return true;
-			}
-		}
-		return false;
+        if (countDuplicateSymbole(gezHand) == 2) {	
+            return true;
+        }
+        return false;
 	}
+	
 	static boolean dreier(int[] gezHand) {
-		int[] gezSymbole = convertHandSymbol(gezHand);
-		Arrays.sort(gezHand);
-		for (int i = 0; i < gezSymbole.length - 3; i++) {
-			if ((gezSymbole[i] == gezSymbole[i + 1]) && (gezSymbole[i] == gezSymbole[i + 2])) {
-				return true;
-			}
-		}
-		return false;
+        if (countDuplicateSymbole(gezHand) == 3) {	
+            return true;
+        }
+        return false;
 	}
 
 	static boolean vierer(int[] gezHand) {
-		int[] gezSymbole = convertHandSymbol(gezHand);
-		Arrays.sort(gezSymbole);
-		for (int i = 0; i < gezSymbole.length - 4; i++) {
-			if ((gezSymbole[i] == gezSymbole[i + 1]) && (gezSymbole[i] == gezSymbole[i + 2])
-					&& (gezSymbole[i] == gezSymbole[i + 3])) {
-				return true;
-			}
-		}
-		return false;
+        if (countDuplicateSymbole(gezHand) == 4) {	
+            return true;
+        }
+        return false;
 	}
 
-	static boolean fullHaus(int[] hand) { //nur kombinieren 
-		if (dreier(hand) && (paar(hand))) {
+	static boolean fullHaus(int[] hand) { 					
+		if (dreier(hand) && checkForOnePair(hand)) {		
 			return true;
 		}
 		return false;
 	}
 
-	static boolean street(int[] hand) {
+	static boolean street(int[] hand) { 	
 		int[] gezSymbole = convertHandSymbol(hand);
 		Arrays.sort(gezSymbole);
-		if (((gezSymbole[0] == gezSymbole[1] - 1) && (gezSymbole[1] == gezSymbole[2] - 1)
-				&& (gezSymbole[2] == gezSymbole[3] - 1) && (gezSymbole[3] == gezSymbole[4] - 1))
-				|| ((gezSymbole[0] == gezSymbole[1] - 1) && (gezSymbole[1] == gezSymbole[2] - 1)
-						&& (gezSymbole[2] == gezSymbole[3] - 1) && (gezSymbole[3] == gezSymbole[0] - 1))) {
+		for (int i = 0; i<hand.length-1;i++) {
+			if (!((gezSymbole[i+1]-gezSymbole[i])==1)) {return false;}
+		}
+		return true;
+	}
+	
+	static boolean streetAuﬂnahme(int[] hand) {
+		int[] gezSymbole = convertHandSymbol(hand);
+		Arrays.sort(gezSymbole);
+		if ((gezSymbole[0]==0) && (gezSymbole[1]==1) && (gezSymbole[2]==2) && (gezSymbole[3]==3) &&(gezSymbole[4]==12)) {
 			return true;
 		}
 		return false;
 	}
-
+	
 	static boolean flush(int[] hand) { // ganze hand gleichfarbig
 		int[] gezFarbe = convertHandFarbe(hand);
-		Arrays.parallelSort(gezFarbe);
+		Arrays.sort(gezFarbe);
 		if ((gezFarbe[0] == gezFarbe[1]) && (gezFarbe[1] == gezFarbe[2]) && (gezFarbe[2] == gezFarbe[3])
 				&& (gezFarbe[3] == gezFarbe[4])) {
 			return true;
