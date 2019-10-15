@@ -46,7 +46,7 @@ public class MainPokerGame2 {
 		System.out.println(paareCount+"\t mal zwei Paare. Wahrscheinlichekit von \t"+numberFormat.format(((paareCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
 		System.out.println(dreierCount+"\t mal einen Dreier. Wahrscheinlichekit von \t"+numberFormat.format(((dreierCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
 		System.out.println((strasseCount+streetAuﬂnahmeCount)+"\t mal eine Strasse. Wahrscheinlichekit von \t"+"0"+numberFormat.format((((strasseCount+streetAuﬂnahmeCount)/SCHLEIFENDURCHLAEUFE)*100))+"%");
-		System.out.println(flushCount+"\t mal einen Flush. Wahrscheinlichekit von \t"+"0"+numberFormat.format(((flushCount/SCHLEIFENDURCHLAEUFE)*100))+"%"+"\t stimmt sogar (irgendwas zwischen 0,2052 und 0,1913)");
+		System.out.println(flushCount+"\t mal einen Flush. Wahrscheinlichekit von \t"+"0"+numberFormat.format(((flushCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
 		System.out.println(fullHausCount+"\t mal ein Volles Haus. Wahrscheinlichekit von \t"+"0"+numberFormat.format(((fullHausCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
 		System.out.println(viererCount+"\t mal einen Vierer. Wahrscheinlichekit von \t"+"0"+numberFormat.format(((viererCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
 		System.out.println(streetFlushCount+"\t mal ein Straight Flush. Wahrscheinlichekit von "+"0"+numberFormat.format(((streetFlushCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
@@ -69,7 +69,7 @@ public class MainPokerGame2 {
 		int[] gezHand = new int[anzZiehKarten];
 		for (int i = (kartenDeck.length - anzZiehKarten); i < kartenDeck.length; i++) { 
 			gezHand[i - kartenDeck.length + anzZiehKarten] = kartenDeck[i]; 
-																			
+
 		}
 		return gezHand; 
 	}
@@ -91,7 +91,7 @@ public class MainPokerGame2 {
 	}
 
 	static int[] convertHandFarbe(int[] hand) { // es macht keinen unterschied ob da jetzt int[] hand oder int hand[]
-												// steht oda
+		// steht oda
 		int[] newHand = new int[hand.length];
 		for (int i = 0; i < hand.length; i++) {
 			newHand[i] = farbeHerausfinden(hand[i]);
@@ -104,52 +104,62 @@ public class MainPokerGame2 {
 		Arrays.sort(gezSymbole);
 		return symbolHerausfinden(gezSymbole[gezSymbole.length - 1]);
 	}
-	
-	public static int countDuplicateSymbole(int cards[]) { //vom Flash geklaut
-	        int amountOfDuplicates = 0;
-	        for (int i = 0; i < cards.length-1; i++) {
-	            for (int j = i+1; j < cards.length; j++) {
-	                if (((cards[i] % anzSymbole) == (cards[j] % anzSymbole))) {
-	                    amountOfDuplicates++; //des sollten aussen wo gez‰hlt wean
-	                }
-	            }
-	        }
-	        return amountOfDuplicates;
-	}
-	
-	public static boolean checkForOnePair(int[] cards) {
-        if (countDuplicateSymbole(cards) == 1) {	//f¸r 2 pair dann 2
-            return true;
-        }
-        return false;
-    }
-	
-	static boolean zweiPaar(int[] gezHand) {
-        if (countDuplicateSymbole(gezHand) == 2) {	
-            return true;
-        }
-        return false;
-	}
-	
-	static boolean dreier(int[] gezHand) {
-        if (countDuplicateSymbole(gezHand) == 3) {	
-            return true;
-        }
-        return false;
+
+	static int countDuplicateSymbole(int cards[]) { //vom Flash geklaut
+		/*int amountOfDuplicates = 0;
+		for (int i = 0; i < cards.length-1; i++) {
+			for (int j = i+1; j < cards.length; j++) {
+				if (((cards[i] % anzSymbole) == (cards[j] % anzSymbole))) {
+					amountOfDuplicates++; //des sollten aussen wo gez‰hlt wean
+				}
+			}
+		}
+		return amountOfDuplicates;*/
+		int amountOfDuplicates = 0;
+		for (int i = 0; i < cards.length; i++) {
+			for (int j = 0; j < cards.length; j++) {
+				if ((cards[i] % anzSymbole == cards[j] % anzSymbole) && i != j) {
+					amountOfDuplicates++;
+				}
+			}
+		}
+		return amountOfDuplicates;
 	}
 
-	static boolean vierer(int[] gezHand) {
-        if (countDuplicateSymbole(gezHand) == 4) {	
-            return true;
-        }
-        return false;
-	}
-
-	static boolean fullHaus(int[] hand) { 					
-		if (dreier(hand) && checkForOnePair(hand)) {		
+	static boolean checkForOnePair(int[] cards) {
+		if (countDuplicateSymbole(cards) == 2) {	//bei meiner auskommentierten methode 1 und bei 2 2 und bei 3 3 und bei 4 4
 			return true;
 		}
 		return false;
+	}
+
+	static boolean zweiPaar(int[] gezHand) {
+		if (countDuplicateSymbole(gezHand) == 4) {	
+			return true;
+		}
+		return false;
+	}
+
+	static boolean dreier(int[] gezHand) {
+		if (countDuplicateSymbole(gezHand) == 6) {	
+			return true;
+		}
+		return false;
+	}
+
+	static boolean vierer(int[] gezHand) {
+		if (countDuplicateSymbole(gezHand) == 12) {	
+			return true;
+		}
+		return false;
+	}
+
+	static boolean fullHaus(int[] hand) { 					
+		/*if (dreier(hand) && checkForOnePair(hand)) {		
+			return true;
+		}
+		return false;*/
+		return countDuplicateSymbole(hand) == 8;
 	}
 
 	static boolean street(int[] hand) { 	
@@ -160,7 +170,7 @@ public class MainPokerGame2 {
 		}
 		return true;
 	}
-	
+
 	static boolean streetAuﬂnahme(int[] hand) {
 		int[] gezSymbole = convertHandSymbol(hand);
 		Arrays.sort(gezSymbole);
@@ -169,7 +179,7 @@ public class MainPokerGame2 {
 		}
 		return false;
 	}
-	
+
 	static boolean flush(int[] hand) { // ganze hand gleichfarbig
 		int[] gezFarbe = convertHandFarbe(hand);
 		Arrays.sort(gezFarbe);
@@ -186,7 +196,7 @@ public class MainPokerGame2 {
 		}
 		return false;
 	}
-	
+
 	static boolean royalStreetFlush(int[] hand) {
 		if (!flush(hand)) {
 			return false;
