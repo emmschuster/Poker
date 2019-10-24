@@ -1,7 +1,8 @@
-//import java.util.Arrays; brauch i lei wenn i sort verwenden darf
+import java.util.Arrays; //brauch i lei wenn i sort verwenden darf
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.Scanner;
 /*
  * PokerGame2.0
  */
@@ -12,7 +13,7 @@ public class MainPokerGame2 {
 	static final int anzSymbole = 13; 			// final für die Konstaten
 	static int[] kartenDeck = new int[anzKarten];
 	static final int anzZiehKarten = 5;
-	static final double SCHLEIFENDURCHLAEUFE=1000000;		
+	static int SCHLEIFENDURCHLAEUFE;		
 	static int paarCount;
 	static int paareCount;
 	static int dreierCount;
@@ -26,33 +27,39 @@ public class MainPokerGame2 {
 	static DecimalFormat numberFormat = new DecimalFormat("#.000000");
 
 	public static void main(String[] args) {	
-		int[] gezHand = null;
-		fillArray();
-		System.out.println("Bei "+SCHLEIFENDURCHLAEUFE+" Durchgängen hast du : ");
-		for(int schleifi=0; schleifi<SCHLEIFENDURCHLAEUFE; schleifi++) { 
-			gezHand = kartenZiehen();
-			if (checkForOnePair(gezHand)) {paarCount++;}
-			if (zweiPaar(gezHand)) {paareCount++;}
-			if (dreier(gezHand)) {dreierCount++;}
-			if (street(gezHand)) {strasseCount++;}
-			if (streetAußnahme(gezHand)) {streetAußnahmeCount++;}
-			if (flush(gezHand)) {flushCount++;}
-			if (fullHaus(gezHand)) {fullHausCount++;}
-			if (vierer(gezHand)) {viererCount++;}
-			if (streetFlush(gezHand)) {streetFlushCount++;}
-			if(royalStreetFlush(gezHand)) {royalStreetFlushCount++;}
+		Scanner sc = new Scanner (System.in);
+		try {
+			System.out.println("Wie viele Schleifendruchläufe willst du ?");
+			SCHLEIFENDURCHLAEUFE=sc.nextInt();
+			int[] gezHand = null;
+			fillArray();
+			System.out.println("Bei "+SCHLEIFENDURCHLAEUFE+" Durchgängen hast du : ");
+			for(int schleifi=0; schleifi<SCHLEIFENDURCHLAEUFE; schleifi++) { 
+				gezHand = kartenZiehen();
+				if (checkForOnePair(gezHand)) {paarCount++;}
+				if (zweiPaar(gezHand)) {paareCount++;}
+				if (dreier(gezHand)) {dreierCount++;}
+				if (street(gezHand)) {strasseCount++;}
+				if (streetAußnahme(gezHand)) {streetAußnahmeCount++;}
+				if (flush(gezHand)) {flushCount++;}
+				if (fullHaus(gezHand)) {fullHausCount++;}
+				if (vierer(gezHand)) {viererCount++;}
+				if (streetFlush(gezHand)) {streetFlushCount++;}
+				if(royalStreetFlush(gezHand)) {royalStreetFlushCount++;}
+			}
+			System.out.println(paarCount+"\t mal ein Paar. Wahrscheinlichekit von \t\t"+numberFormat.format((((paarCount/(double)SCHLEIFENDURCHLAEUFE)*100)))+"%");
+			System.out.println(paareCount+"\t mal zwei Paare. Wahrscheinlichekit von \t"+numberFormat.format(((paareCount/(double)SCHLEIFENDURCHLAEUFE)*100))+"%");
+			System.out.println(dreierCount+"\t mal einen Dreier. Wahrscheinlichekit von \t"+numberFormat.format(((dreierCount/(double)SCHLEIFENDURCHLAEUFE)*100))+"%");
+			System.out.println((strasseCount+streetAußnahmeCount)+"\t mal eine Strasse. Wahrscheinlichekit von \t"+"0"+numberFormat.format((((strasseCount+streetAußnahmeCount)/(double)SCHLEIFENDURCHLAEUFE)*100))+"%");
+			System.out.println(flushCount+"\t mal einen Flush. Wahrscheinlichekit von \t"+"0"+numberFormat.format(((flushCount/(double)SCHLEIFENDURCHLAEUFE)*100))+"%");
+			System.out.println(fullHausCount+"\t mal ein Volles Haus. Wahrscheinlichekit von \t"+"0"+numberFormat.format(((fullHausCount/(double)SCHLEIFENDURCHLAEUFE)*100))+"%");
+			System.out.println(viererCount+"\t mal einen Vierer. Wahrscheinlichekit von \t"+"0"+numberFormat.format(((viererCount/(double)SCHLEIFENDURCHLAEUFE)*100))+"%");
+			System.out.println(streetFlushCount+"\t mal ein Straight Flush. Wahrscheinlichekit von "+"0"+numberFormat.format(((streetFlushCount/(double)SCHLEIFENDURCHLAEUFE)*100))+"%");
+			System.out.println(royalStreetFlushCount+"\t mal einen Royal Flush. Wahrscheinlichekit von \t"+"0"+numberFormat.format(((royalStreetFlushCount/(double)SCHLEIFENDURCHLAEUFE)*100))+"%");
+		} catch (Exception e) {
+			System.out.println("Gib bitte nur ganzahlige Werte ein!");
 		}
-		System.out.println(paarCount+"\t mal ein Paar. Wahrscheinlichekit von \t\t"+numberFormat.format((((paarCount/SCHLEIFENDURCHLAEUFE)*100)))+"%");
-		System.out.println(paareCount+"\t mal zwei Paare. Wahrscheinlichekit von \t"+numberFormat.format(((paareCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
-		System.out.println(dreierCount+"\t mal einen Dreier. Wahrscheinlichekit von \t"+numberFormat.format(((dreierCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
-		System.out.println((strasseCount+streetAußnahmeCount)+"\t mal eine Strasse. Wahrscheinlichekit von \t"+"0"+numberFormat.format((((strasseCount+streetAußnahmeCount)/SCHLEIFENDURCHLAEUFE)*100))+"%");
-		System.out.println(flushCount+"\t mal einen Flush. Wahrscheinlichekit von \t"+"0"+numberFormat.format(((flushCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
-		System.out.println(fullHausCount+"\t mal ein Volles Haus. Wahrscheinlichekit von \t"+"0"+numberFormat.format(((fullHausCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
-		System.out.println(viererCount+"\t mal einen Vierer. Wahrscheinlichekit von \t"+"0"+numberFormat.format(((viererCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
-		System.out.println(streetFlushCount+"\t mal ein Straight Flush. Wahrscheinlichekit von "+"0"+numberFormat.format(((streetFlushCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
-		System.out.println(royalStreetFlushCount+"\t mal einen Royal Flush. Wahrscheinlichekit von \t"+"0"+numberFormat.format(((royalStreetFlushCount/SCHLEIFENDURCHLAEUFE)*100))+"%");
 	}
-
 	static void fillArray() {
 		for (int i = 0; i < anzKarten; i++) {
 			kartenDeck[i] = i;
