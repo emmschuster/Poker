@@ -1,4 +1,3 @@
-import java.util.Arrays; //brauch i lei wenn i sort verwenden darf
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Random;
